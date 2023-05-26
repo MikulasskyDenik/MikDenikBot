@@ -1,0 +1,14 @@
+{
+  "name": "mikdenikbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "main": ""
+  },
+  "author": "Borecnakonec33",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.11.0"
+  }
+}
