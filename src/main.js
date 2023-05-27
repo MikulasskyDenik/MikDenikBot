@@ -1,4 +1,4 @@
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Events, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const fs = require("fs")
 
 //init
@@ -27,31 +27,38 @@ client.on(Events.MessageCreate, async message => {
             var message_args = message.content.split(" ")
             var n = ((message_args.indexOf("-n") + 1 != 0) ? message_args[message_args.indexOf("-n") + 1]: 0)
 
-            //console.log(message.guild.roles.cache.get("1026475673621106699")).guild.members
             var members = await message.guild.members.fetch()
             var journalists = []
             members.forEach(member => {
-                if(member._roles == "1026475673621106699"){
-                    journalists.push(member)
+                if(member._roles.indexOf("1026475673621106699") != -1){
+                    journalists.push(member.user.id)
                 }
             })
 
-            console.log(journalists)
-
             var idx_arr = [];
             while(idx_arr.length < n){
-                var r = Math.floor(Math.random() * journalists.length) + 1;
+                var r = Math.floor(Math.random() * journalists.length);
                 if(idx_arr.indexOf(r) === -1) idx_arr.push(r);
             }
 
             console.log(idx_arr)
+            console.log(journalists)
 
-            var final = []
+            var final = ""
             idx_arr.forEach(idx => {
-                final.push(journalists[idx].id)
+                final = final.concat("\n", `<@${journalists[idx]}>`)
             })
 
             console.log(final)
+
+            let rozpis = new EmbedBuilder()
+                .setColor("DarkButNotBlack")
+                .setTitle("rozpis na tento měsíc")
+                .setDescription("rozpis kdo všechno napíše tento měsíc článek na web")
+                .setTimestamp()
+
+            message.channel.send({embeds: [rozpis]})
+            message.channel.send(final)
         }
     }
 })
