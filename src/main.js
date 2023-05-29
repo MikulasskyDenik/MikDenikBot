@@ -4,7 +4,10 @@ const fs = require("fs")
 //init
 
 var token_raw = fs.readFileSync(__dirname + "/token.json")
+var cache_raw = fs.readFileSync(__dirname + "/cache.json")
+
 var TOKEN = JSON.parse(token_raw)["token"]
+var CACHE = JSON.parse(cache_raw)
 var PREFIX = ":"
 
 const client = new Client({ intents: [
@@ -35,14 +38,32 @@ client.on(Events.MessageCreate, async message => {
                 }
             })
 
+            console.log(journalists)
+
             var idx_arr = [];
-            while(idx_arr.length < n){
-                var r = Math.floor(Math.random() * journalists.length);
-                if(idx_arr.indexOf(r) === -1) idx_arr.push(r);
+            var old_idx;
+
+            if (CACHE["plan"].length != 0){
+                old_idx = CACHE["plan"]
+                while(idx_arr.length < n){
+                    var r = Math.floor(Math.random() * journalists.length);
+                    if(idx_arr.indexOf(r) === -1 && !old_idx.includes(r)) idx_arr.push(r);
+                }
+            }
+            else{
+                old_idx = CACHE["plan"]
+                while(idx_arr.length < n){
+                    var r = Math.floor(Math.random() * journalists.length);
+                    if(idx_arr.indexOf(r) === -1) idx_arr.push(r);
+                }
             }
 
             console.log(idx_arr)
-            
+
+            //add to cache
+            CACHE["plan"] = idx_arr
+            let cache_out = JSON.stringify(CACHE)
+            fs.writeFileSync(__dirname + "/cache.json", cache_out)
 
             var final = ""
             idx_arr.forEach(idx => {
