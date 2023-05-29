@@ -42,7 +42,7 @@ client.on(Events.MessageCreate, async message => {
             }
 
             console.log(idx_arr)
-            console.log(journalists)
+            
 
             var final = ""
             idx_arr.forEach(idx => {
